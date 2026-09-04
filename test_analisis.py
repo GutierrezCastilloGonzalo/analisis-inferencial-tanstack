@@ -47,7 +47,7 @@ def test_ic_media_coincide_con_scipy():
     assert math.isclose(r["error_estandar"], ee, rel_tol=1e-12)
     assert math.isclose(r["margen"], 1.96 * ee, rel_tol=1e-12)
     assert math.isclose(r["li"], 1200.0 - 1.96 * ee, rel_tol=1e-12)
-    assert round(norm.ppf(0.975), 2) == 1.96
+    assert r["z"] == round(norm.ppf(0.975), 2)
 
 
 def test_ic_proporcion_coincide_con_scipy():
@@ -58,7 +58,7 @@ def test_ic_proporcion_coincide_con_scipy():
     assert math.isclose(r["margen"], 1.96 * ee, rel_tol=1e-12)
     assert r["np_"] == 52 and r["nq"] == 48
     assert r["normal_valida"] is True
-    assert round(norm.ppf(0.975), 2) == 1.96
+    assert r["z"] == round(norm.ppf(0.975), 2)
 
 
 def test_la_proporcion_de_la_muestra_admite_aproximacion_normal():
@@ -81,3 +81,33 @@ def test_el_ic_de_la_media_contiene_el_parametro_real():
 def test_la_poblacion_esta_sesgada_a_la_derecha():
     pob = A.parametros_poblacionales(A.cargar_censo())
     assert pob["mu"] / pob["mediana"] > 5, "sin sesgo, el argumento del TLC pierde fuerza"
+
+
+def test_ic_proporcion_detecta_cuando_la_normal_no_vale():
+    # Con p extremo la aproximacion normal deja de valer, y la funcion tiene
+    # que decirlo. Sin este caso, un umbral mal escrito pasaria inadvertido.
+    flojo = A.ic_proporcion(p=0.05, n=50)
+    assert flojo["np_"] == 2 and flojo["nq"] == 48
+    assert flojo["normal_valida"] is False
+
+    # Justo en el borde: np = 10 exacto. Distingue '>= 10' de '> 10'.
+    borde = A.ic_proporcion(p=0.20, n=50)
+    assert borde["np_"] == 10 and borde["nq"] == 40
+    assert borde["normal_valida"] is True
+
+
+def test_descriptivos_de_la_muestra():
+    # Valores de la muestra que fija la semilla 20260907. Cubren las nueve
+    # claves: sin esto, un error en los cuartiles o en el sesgo pasaria mudo.
+    d = A.descriptivos(A.extraer_muestra(A.cargar_censo()))
+    assert d["n"] == 100
+    assert math.isclose(d["media"], 1312.9531694444445, rel_tol=1e-12)
+    assert math.isclose(d["mediana"], 84.53444444444445, rel_tol=1e-12)
+    assert math.isclose(d["desv"], 2661.893463538304, rel_tol=1e-12)
+    assert math.isclose(d["q1"], 20.559722222222224, rel_tol=1e-12)
+    assert math.isclose(d["q3"], 1184.503611111111, rel_tol=1e-12)
+    assert math.isclose(d["minimo"], 0.10916666666666666, rel_tol=1e-12)
+    assert math.isclose(d["maximo"], 13538.145277777778, rel_tol=1e-12)
+    assert math.isclose(d["sesgo"], 15.53157624768339, rel_tol=1e-12)
+    # el sesgo es media/mediana: debe ser coherente con las dos claves de arriba
+    assert math.isclose(d["sesgo"], d["media"] / d["mediana"], rel_tol=1e-12)
