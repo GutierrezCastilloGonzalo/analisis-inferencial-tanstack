@@ -1,0 +1,4 @@
+datos/censo-crudo.json
+__pycache__/
+*.py[cod]
+.venv/
