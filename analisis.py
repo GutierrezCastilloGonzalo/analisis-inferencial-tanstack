@@ -53,13 +53,18 @@ def descriptivos(muestra):
     """Medidas de tendencia central y de dispersion de la muestra."""
     h = sorted(horas_resolucion(i) for i in muestra)
     n = len(h)
+    # Cuartiles por interpolacion lineal entre estadisticos de orden (metodo
+    # "inclusive" = numpy.percentile / scipy / Excel / matplotlib.boxplot).
+    # Con los estadisticos de orden crudos, h[n//4] y h[3n//4], la caja del
+    # diagrama no coincidiria con los cuartiles citados en el informe.
+    q1, _, q3 = statistics.quantiles(h, n=4, method="inclusive")
     return {
         "n": n,
         "media": statistics.mean(h),
         "mediana": statistics.median(h),
         "desv": statistics.stdev(h),        # muestral, divide por n-1
-        "q1": h[n // 4],
-        "q3": h[(3 * n) // 4],
+        "q1": q1,
+        "q3": q3,
         "minimo": h[0],
         "maximo": h[-1],
         "sesgo": statistics.mean(h) / statistics.median(h),
