@@ -47,3 +47,38 @@ def parametros_poblacionales(censo):
 def extraer_muestra(censo, n=N_MUESTRA, semilla=SEMILLA):
     """Muestreo aleatorio simple SIN reemplazo, reproducible por la semilla."""
     return random.Random(semilla).sample(censo, n)
+
+
+def descriptivos(muestra):
+    """Medidas de tendencia central y de dispersion de la muestra."""
+    h = sorted(horas_resolucion(i) for i in muestra)
+    n = len(h)
+    return {
+        "n": n,
+        "media": statistics.mean(h),
+        "mediana": statistics.median(h),
+        "desv": statistics.stdev(h),        # muestral, divide por n-1
+        "q1": h[n // 4],
+        "q3": h[(3 * n) // 4],
+        "minimo": h[0],
+        "maximo": h[-1],
+        "sesgo": statistics.mean(h) / statistics.median(h),
+    }
+
+
+def ic_media(media, sigma, n, z=Z_TABLA):
+    """IC para la media con sigma CONOCIDA: por eso Z y no T de Student."""
+    ee = sigma / math.sqrt(n)
+    margen = z * ee
+    return {"z": z, "error_estandar": ee, "margen": margen,
+            "li": media - margen, "ls": media + margen}
+
+
+def ic_proporcion(p, n, z=Z_TABLA):
+    """IC para la proporcion. Comprueba np y nq antes de confiar en la normal."""
+    ee = math.sqrt(p * (1 - p) / n)
+    margen = z * ee
+    k = round(p * n)
+    return {"z": z, "error_estandar": ee, "margen": margen,
+            "li": p - margen, "ls": p + margen,
+            "np_": k, "nq": n - k, "normal_valida": min(k, n - k) >= 10}
