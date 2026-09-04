@@ -92,6 +92,9 @@ def informe():
     desc = descriptivos(muestra)
     k = sum(1 for i in muestra if horas_resolucion(i) < UMBRAL_H)
     p = k / desc["n"]
+    # La media es de la muestra, pero la sigma es la POBLACIONAL: se conoce
+    # porque se tiene el censo entero. Pasar desc["desv"] (la muestral) aca
+    # seria el error clasico, y el IC resultante seguiria "viendose bien".
     icm = ic_media(desc["media"], pob["sigma"], desc["n"])
     icp = ic_proporcion(p, desc["n"])
     return {

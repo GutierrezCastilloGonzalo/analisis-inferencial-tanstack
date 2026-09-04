@@ -124,3 +124,13 @@ def test_informe_trae_las_cinco_secciones_y_la_validacion():
     # poblacion finita, y si esto cambiara habria que rehacer los intervalos.
     assert r["validacion"]["correccion_poblacion_finita_necesaria"] is False
     assert math.isclose(r["muestra"]["fraccion_muestreada"], 100 / 2036, rel_tol=1e-12)
+    # El error estandar delata de que sigma viene el intervalo: 2951,2547/10.
+    # Con la desviacion MUESTRAL (2661,89) daria 266,19 y el intervalo seria
+    # [791, 1835], que TAMBIEN contiene a mu: por eso el booleano de validacion
+    # no alcanza para atrapar esa confusion, y hacen falta estos tres asserts.
+    assert math.isclose(r["ic_media"]["error_estandar"], 295.1254703267369, rel_tol=1e-12)
+    assert math.isclose(r["ic_media"]["li"], 734.5072476040401, rel_tol=1e-12)
+    assert math.isclose(r["ic_media"]["ls"], 1891.399091284849, rel_tol=1e-12)
+    assert r["ic_proporcion"]["np_"] == 54 and r["ic_proporcion"]["nq"] == 46
+    # k contado a mano y np_ reconstruido dentro de ic_proporcion deben coincidir
+    assert r["muestra"]["k_bajo_umbral"] == r["ic_proporcion"]["np_"]
