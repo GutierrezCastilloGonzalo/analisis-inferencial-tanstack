@@ -21,6 +21,9 @@ def test_la_muestra_es_reproducible():
     a = A.extraer_muestra(censo)
     b = A.extraer_muestra(censo)
     assert [i["number"] for i in a] == [i["number"] for i in b]
+    # Fijan la semilla: sin esto, una implementacion que ignore `semilla` y
+    # use otro generador seguiria pareciendo "reproducible" y pasaria igual.
+    assert [i["number"] for i in a[:5]] == [510, 5546, 628, 5873, 4225]
 
 
 def test_la_muestra_es_sin_reemplazo_y_del_tamano_pedido():
@@ -30,4 +33,8 @@ def test_la_muestra_es_sin_reemplazo_y_del_tamano_pedido():
 
 
 def test_no_hace_falta_correccion_por_poblacion_finita():
-    assert A.N_MUESTRA / 2036 < 0.05
+    # n/N < 5 % es lo que permite omitir la correccion por poblacion finita.
+    # El denominador sale del censo, no de un literal: si la poblacion
+    # cambiara de tamano, este test tiene que enterarse.
+    N = len(A.cargar_censo())
+    assert A.N_MUESTRA / N < 0.05
