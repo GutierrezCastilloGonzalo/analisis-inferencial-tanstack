@@ -82,3 +82,35 @@ def ic_proporcion(p, n, z=Z_TABLA):
     return {"z": z, "error_estandar": ee, "margen": margen,
             "li": p - margen, "ls": p + margen,
             "np_": k, "nq": n - k, "normal_valida": min(k, n - k) >= 10}
+
+
+def informe():
+    """Arma el diccionario del que sale TODA cifra del documento."""
+    censo = cargar_censo()
+    pob = parametros_poblacionales(censo)
+    muestra = extraer_muestra(censo)
+    desc = descriptivos(muestra)
+    k = sum(1 for i in muestra if horas_resolucion(i) < UMBRAL_H)
+    p = k / desc["n"]
+    icm = ic_media(desc["media"], pob["sigma"], desc["n"])
+    icp = ic_proporcion(p, desc["n"])
+    return {
+        "poblacion": pob,
+        "muestra": {**desc, "k_bajo_umbral": k, "p": p,
+                    "fraccion_muestreada": desc["n"] / pob["N"]},
+        "ic_media": icm,
+        "ic_proporcion": icp,
+        "validacion": {
+            "ic_media_contiene_mu": icm["li"] <= pob["mu"] <= icm["ls"],
+            "ic_proporcion_contiene_pi": icp["li"] <= pob["pi"] <= icp["ls"],
+            "correccion_poblacion_finita_necesaria": desc["n"] / pob["N"] >= 0.05,
+        },
+    }
+
+
+if __name__ == "__main__":
+    r = informe()
+    salida = Path(__file__).parent / "resultados.json"
+    salida.write_text(json.dumps(r, indent=2, ensure_ascii=False), encoding="utf8")
+    print(json.dumps(r, indent=2, ensure_ascii=False))
+    print(f"\nescrito en {salida}")

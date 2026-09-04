@@ -1,0 +1,45 @@
+{
+  "poblacion": {
+    "N": 2036,
+    "mu": 1455.6566535690897,
+    "sigma": 2951.254703267369,
+    "mediana": 135.04125,
+    "pi": 0.5235756385068763
+  },
+  "muestra": {
+    "n": 100,
+    "media": 1312.9531694444445,
+    "mediana": 84.53444444444445,
+    "desv": 2661.893463538304,
+    "q1": 20.559722222222224,
+    "q3": 1184.503611111111,
+    "minimo": 0.10916666666666666,
+    "maximo": 13538.145277777778,
+    "sesgo": 15.53157624768339,
+    "k_bajo_umbral": 54,
+    "p": 0.54,
+    "fraccion_muestreada": 0.04911591355599214
+  },
+  "ic_media": {
+    "z": 1.96,
+    "error_estandar": 295.12547032673695,
+    "margen": 578.4459218404044,
+    "li": 734.5072476040401,
+    "ls": 1891.399091284849
+  },
+  "ic_proporcion": {
+    "z": 1.96,
+    "error_estandar": 0.04983974317750845,
+    "margen": 0.09768589662791656,
+    "li": 0.4423141033720835,
+    "ls": 0.6376858966279166,
+    "np_": 54,
+    "nq": 46,
+    "normal_valida": true
+  },
+  "validacion": {
+    "ic_media_contiene_mu": true,
+    "ic_proporcion_contiene_pi": true,
+    "correccion_poblacion_finita_necesaria": false
+  }
+}

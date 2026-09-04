@@ -111,3 +111,16 @@ def test_descriptivos_de_la_muestra():
     assert math.isclose(d["sesgo"], 15.53157624768339, rel_tol=1e-12)
     # el sesgo es media/mediana: debe ser coherente con las dos claves de arriba
     assert math.isclose(d["sesgo"], d["media"] / d["mediana"], rel_tol=1e-12)
+
+
+def test_informe_trae_las_cinco_secciones_y_la_validacion():
+    # informe() produce el unico artefacto del que el documento saca cifras.
+    # Sin este test, un cambio de clave romperia el informe en silencio.
+    r = A.informe()
+    assert set(r) == {"poblacion", "muestra", "ic_media", "ic_proporcion", "validacion"}
+    assert r["validacion"]["ic_media_contiene_mu"] is True
+    assert r["validacion"]["ic_proporcion_contiene_pi"] is True
+    # n/N = 4,91 % < 5 %: por eso el informe NO aplica correccion por
+    # poblacion finita, y si esto cambiara habria que rehacer los intervalos.
+    assert r["validacion"]["correccion_poblacion_finita_necesaria"] is False
+    assert math.isclose(r["muestra"]["fraccion_muestreada"], 100 / 2036, rel_tol=1e-12)
