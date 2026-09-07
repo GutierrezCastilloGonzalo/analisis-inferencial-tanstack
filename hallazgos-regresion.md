@@ -1,7 +1,8 @@
 # Mediciones para la pata de regresión
 
 Fecha: **7 de septiembre de 2026**. Medido sobre el censo congelado
-(N = 2036 issues cerrados, hasta el 30 de agosto de 2026).
+(N = 2036 issues cerrados hasta el 31 de agosto de 2026, descargado el 4 de
+septiembre).
 
 Estas cifras no entran en el APF1, que se cierra en los intervalos de confianza.
 Se midieron para contestar una sola pregunta antes de comprometer el tema del
