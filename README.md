@@ -16,6 +16,12 @@ APF2 (pruebas de hipótesis) y el proyecto final (regresión).
     uv run --system-certs --with scipy --with numpy python analisis.py
     uv run --system-certs --with matplotlib --with scipy --with numpy python graficos.py
 
+APF2 (pruebas de hipotesis sobre la misma muestra):
+
+    uv run --system-certs --with scipy --with numpy python analisis_apf2.py
+    uv run --system-certs --with matplotlib --with scipy --with numpy python graficos_apf2.py
+    uv run --system-certs python tabla_anexo_apf2.py <salida.tex>
+
 ## Tests
 
     uv run --system-certs --with pytest --with scipy --with numpy python -m pytest -v
